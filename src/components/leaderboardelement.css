@@ -6,7 +6,7 @@
     width: 95%;
     height: 45px;
     display: grid;
-    grid-template-columns: 100px 100px 200px; /* Fixed widths for each column */
+    grid-template-columns: 100px 100px 100px; 
     align-items: center;
     gap: 10px;
 }
@@ -16,11 +16,11 @@
     font-weight: bold;
     display: flex;
     align-items: center;
-    margin: 0 10px; /* Adjust spacing as needed */
+    margin: 0 10px; 
 }
   
 .points img, .time img {
-    margin-right: 5px; /* Space between image and text */
+    margin-right: 5px; 
 }
 
 .first-position {
@@ -37,4 +37,13 @@
   
 .high-position {
     background-color: #3B5481; 
+}
+
+
+
+@media (max-width: 700px) {
+    .leaderboard-element {
+        border-radius: 10px 0px 0px 10px;
+        width: auto;
+    }
 }
