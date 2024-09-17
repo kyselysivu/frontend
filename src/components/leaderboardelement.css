@@ -21,6 +21,8 @@
   
 .points img, .time img {
     margin-right: 5px; 
+    width: 24px;
+    height: 24px;
 }
 
 .first-position {

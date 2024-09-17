@@ -1,0 +1,13 @@
+# Allow all web crawlers to access all content
+User-agent: *
+Disallow:
+
+# Disallow specific directories (example)
+# Disallow: /private/
+# Disallow: /tmp/
+
+# Allow specific directories (example)
+# Allow: /public/
+
+# Sitemap location (example)
+# Sitemap: http://www.example.com/sitemap.xml

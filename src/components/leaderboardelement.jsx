@@ -17,8 +17,8 @@ const LeaderboardElement = (props) => {
 
   return (
     <div className={className}>
-      <h2 className="points"><img src={diamond}/>{props.points}</h2>
-      <p className="time"><img src={timer}/>{props.time}</p>
+      <h2 className="points"><img src={diamond} alt=''/>{props.points}</h2>
+      <p className="time"><img src={timer} alt=''/>{props.time}</p>
       <p className="team">{props.team}</p>
     </div>
   );

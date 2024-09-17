@@ -11,16 +11,16 @@ function Home() {
     return (
         <div>
             <nav></nav>
-            <div class="flex-container">
-                <div class="text-container"> 
-                    <h1 class="h1">Kyselysivu</h1>
-                    <p class="p">
+            <div className="flex-container">
+                <div className="text-container"> 
+                    <h1 className="h1">Kyselysivu</h1>
+                    <p className="p">
                         Vastaa oikein sarjaan monivalintakysymyksiä ryhmäsi kanssa.
                         Sinulla on yhteensä 12 minuuttia aikaa.
                         Parhaat tulokset pääsevät kunniataululle!
                     </p>
                 </div>
-                <div class="container">
+                <div className="container">
                     <input 
                     type="text" 
                     value={inputValue} 
