@@ -21,8 +21,12 @@ body
 
 .header
 {
-    padding: 4%;
+    width: 90%;
+    margin: auto;
     font-size: xx-large;
+    
+    margin-top: 5%;
+    margin-bottom: 5%;
 }
 
 .timer
@@ -37,9 +41,10 @@ body
 {
     display: flex;
     flex-wrap: wrap;
-    padding-top: 2%;
-    padding-left: 23%;
-    padding-top: 2%;
+    justify-content: center;
+
+    width: 90%;
+    margin: auto;
 }
 
 .question
@@ -50,4 +55,21 @@ body
     border-radius: 20px;
     margin-inline: 25px;
     margin-block: 10px;
+}
+
+.questions-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 1200px;
+    max-width: 1200px;
+}
+
+.submit-button-disabled {
+    display: none !important;
+}
+
+.submit-button {
+    padding: 15px;
+    width: 200px;
 }

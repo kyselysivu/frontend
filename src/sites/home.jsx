@@ -22,12 +22,12 @@ function Home() {
                 </div>
                 <div className="container">
                     <input 
-                    type="text" 
-                    value={inputValue} 
-                    onChange={(e) => setInputValue(e.target.value)} 
-                    placeholder="Ryhmän nimi"
+                        type="text" 
+                        value={inputValue} 
+                        onChange={(e) => setInputValue(e.target.value)} 
+                        placeholder="Ryhmän nimi"
                     />
-                    <button onClick={handleButtonClick}>Pelaa</button>
+                    <button className="play-button" onClick={handleButtonClick}>Pelaa</button>
                 </div>
             </div>
         </div>
