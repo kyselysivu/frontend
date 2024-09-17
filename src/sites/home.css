@@ -45,10 +45,14 @@ nav {
 }
 
 .text-container {
+    display: flex;
     width: 395px;
     margin-left: 8.83%;
     margin-top: 114px;
     margin-right: 23.44%;
+    flex-direction: column;
+    align-content: flex-start;
+    align-items: flex-start;
 }
 
 input {
@@ -56,14 +60,14 @@ input {
     height: 48px;
     border-radius: 20px;
     background: #3B5481;
-    margin-bottom: 13px; /* Add margin to separate input and button */
+    margin-bottom: 13px;
     color: white;
     font-family: "Lexend", sans-serif;
     font-optical-sizing: auto;
     font-style: normal;
     font-size: 20px;
     border: none;
-    text-indent: 39px; /* Indent text 39px from the left edge */
+    text-indent: 39px; 
 }
 
 button {
@@ -77,4 +81,15 @@ button {
     font-style: normal;
     font-size: 20px;
     border: none;
+}
+
+@media (max-width: 1000px) {
+
+    .flex-container {
+        flex-wrap: wrap;
+    }
+
+    .container {
+        margin-left: 8.83%;
+    }
 }
