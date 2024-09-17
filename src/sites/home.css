@@ -1,0 +1,80 @@
+body {
+    background: #1E293B;
+    margin: 0;
+    padding: 0;
+    color: white;
+    font-family: "Lexend", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+}
+
+h1 {
+    font-size: 30px;
+    margin-bottom: 8.75%;
+}
+
+p {
+    font-size: 20px;
+    width: 395px;
+    height: 257px;
+}
+
+nav {
+    background: #1D66DC;
+    width: 100%;
+    height: 67px;
+    margin: 0;
+    padding: 0;
+}
+
+.flex-container {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-content: flex-end;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    margin-right: 15.63%;
+    margin-top: 205px;
+    justify-content: flex-start;
+}
+
+.text-container {
+    margin-left: 8.83%;
+    margin-top: 114px;
+    margin-right: 23.44%;
+}
+
+input {
+    width: 440px;
+    height: 48px;
+    border-radius: 20px;
+    background: #3B5481;
+    margin-bottom: 13px; /* Add margin to separate input and button */
+    color: white;
+    font-family: "Lexend", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    font-size: 20px;
+    border: none;
+    text-indent: 39px; /* Indent text 39px from the left edge */
+}
+
+button {
+    border-radius: 20px;
+    height: 48px;
+    width: 145px;
+    background: #1D66DC;
+    color: white;
+    font-family: "Lexend", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    font-size: 20px;
+    border: none;
+}
