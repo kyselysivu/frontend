@@ -15,13 +15,34 @@ export default function Kysely() {
   const [buttonShouldGoToNextQuestion, setButtonShouldGoToNextQuestion] = useState(false);
   const [shouldShowSubtext, setShouldShowSubtext] = useState(false);
   const [subtextContents, setSubtextContents] = useState("");
-  const [timeLeft , setTimeLeft] = useState(60 * 12);
+  const [timeLeft, setTimeLeft] = useState(60 * 12);
+  const [selectedAnswers, setSelectedAnswers] = useState([]);
 
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
     return `${minutes}m ${remainingSeconds}s`;
   };
+
+  function getCorrectAnswers() {
+    return allAnswers.options.filter(option => option.related_question === currentQuestion && option.is_correct == 1);
+  }
+
+  function getIncorrectlyAnsweredOptions() {
+    return selectedAnswers.filter(answer => allAnswers.options.find(option => option.id === answer).is_correct == 0);
+  }
+
+  function getCorrectlyAnsweredOptions() {
+    return selectedAnswers.filter(answer => allAnswers.options.find(option => option.id === answer).is_correct == 1);
+  }
+
+  function getOptionsForCurrentQuestion() {
+    return allAnswers.options.filter(option => option.related_question === currentQuestion);
+  }
+
+  function getTitleForCurrentQuestion() {
+    return allQuestions.questions.find(question => question.id === currentQuestion).question_title;
+  }
 
   // Fetch questions once when component mounts
   useEffect(() => {
@@ -72,7 +93,7 @@ export default function Kysely() {
     <div>
       <div className="navbar"></div>
       <div className="header" style={{ transition: 'opacity 0.5s ease', opacity: questionsLoaded ? 1 : 0 }}>{
-        (questionsLoaded && answersLoaded) ? allQuestions.questions.find(question => question.id === currentQuestion).question_title : "Loading..."
+        (questionsLoaded && answersLoaded) ? getTitleForCurrentQuestion() : "Ladataan..."
       }
       </div>
       <div className="timer" style={{ gap: '10px' }}>
@@ -82,8 +103,20 @@ export default function Kysely() {
       <div className="questions">
         <div className="questions-container" style={{ transition: 'opacity 0.5s ease', opacity: questionsLoaded ? 1 : 0 }}>
           {
-            (questionsLoaded && answersLoaded) ? allAnswers.options.filter(option => option.related_question === currentQuestion).map((option, index) => {
-              return <Question key={index} index={index + 1} question={option.answer_title} className={shouldShowCorrectAnswer ? (option.is_correct == 1 ? 'question-correct' : 'question-incorrect') : ''} />
+            (questionsLoaded && answersLoaded) ? getOptionsForCurrentQuestion().map((option, index) => {
+              return <Question 
+                key={index} 
+                index={index + 1} 
+                question={option.answer_title} 
+                active={selectedAnswers.includes(option.id)}
+                setActiveCallback={(active) => {
+                  if (active) {
+                    setSelectedAnswers([...selectedAnswers, option.id]);
+                  } else {
+                    setSelectedAnswers(selectedAnswers.filter((id) => id !== option.id));
+                  }
+                }}
+                className={shouldShowCorrectAnswer ? (option.is_correct == 1 ? 'question-correct' : 'question-incorrect') : ''} />
             }) : "Loading..."
           }
         </div>
@@ -100,20 +133,34 @@ export default function Kysely() {
             display: 'flex',
           }}
           className='submit-button'
-          onClick={(event) => {
+          onClick={() => {
             if (buttonShouldGoToNextQuestion) {
               setShouldShowCorrectAnswer(false);
               setCurrentQuestion(currentQuestion + 1);
+              setSelectedAnswers([]);
               setShouldShowSubtext(false);
+              setButtonShouldGoToNextQuestion(false);
             } else {
               // Fade out the button
               setSubmitButtonVisible(false);
               
               setTimeout(() => {
                 setShouldShowCorrectAnswer(true);
-                setSubtextContents("fjauiehfoauehfoayegfoaeyghoar")
+
+                let subtext = "Vastasit oikein " +
+                  getCorrectlyAnsweredOptions().length +
+                  "/" +
+                  getCorrectAnswers().length + 
+                  " vaihtoehtoon! ";
+
+                // Check if user got any answers incorrect
+                if (getIncorrectlyAnsweredOptions().length > 0) {
+                  subtext += (getIncorrectlyAnsweredOptions().length) + " valintaasi oli väärin :(";
+                }
+
+                setSubtextContents(subtext);
                 setShouldShowSubtext(true);
-              }, 500);
+              }, 1000);
 
               setTimeout(() => {
                 // Fade the button back in after 5 seconds
