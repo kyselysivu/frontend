@@ -15,8 +15,6 @@ h1 {
 
 p {
     font-size: 20px;
-    width: 395px;
-    height: 257px;
 }
 
 nav {
@@ -43,9 +41,11 @@ nav {
     margin-right: 15.63%;
     margin-top: 205px;
     justify-content: flex-start;
+    width: 440px;
 }
 
 .text-container {
+    width: 395px;
     margin-left: 8.83%;
     margin-top: 114px;
     margin-right: 23.44%;
