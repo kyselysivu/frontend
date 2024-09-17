@@ -1,0 +1,39 @@
+.leaderboard-element {
+    padding: 10px;
+    margin: 5px;
+    border-radius: 10px;
+    width: 841px;
+    height: 46.5px;
+    display: grid;
+    grid-template-columns: 100px 100px 200px; /* Fixed widths for each column */
+    align-items: center;
+    gap: 10px;
+}
+
+.points, .time, .team {
+    font-size: 20px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    margin: 0 10px; /* Adjust spacing as needed */
+}
+  
+.points img, .time img {
+    margin-right: 5px; /* Space between image and text */
+}
+
+.first-position {
+    background: linear-gradient(to right, #D4AF37 77%, rgba(85, 74, 31, 0) 100%);
+}
+
+.second-position {
+    background: linear-gradient(to right, #C0C0C0 77%, rgba(85, 74, 31, 0) 100%); 
+}
+  
+.third-position {
+    background: linear-gradient(to right, #CD7F32 77%, rgba(85, 74, 31, 0) 100%); 
+}
+  
+.high-position {
+    background-color: #f8d7da; 
+}
