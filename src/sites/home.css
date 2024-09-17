@@ -92,6 +92,19 @@ button {
     .container {
         margin-left: 8.83%;
         margin-top: 50px;
+        margin-bottom: 0px;
+    }
+
+    input {
+        width: 100%;
+        margin-left: auto;
+        text-indent: 0;
+        text-align: center;
+    }
+
+    button {
+        width: 100%;
+        margin-left: auto;
     }
 
     .text-container {
