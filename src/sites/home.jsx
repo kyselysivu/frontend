@@ -13,8 +13,8 @@ function Home() {
             <nav></nav>
             <div class="flex-container">
                 <div class="text-container"> 
-                    <h1>Kyselysivu</h1>
-                    <p>
+                    <h1 class="h1">Kyselysivu</h1>
+                    <p class="p">
                         Vastaa oikein sarjaan monivalintakysymyksiä ryhmäsi kanssa.
                         Sinulla on yhteensä 12 minuuttia aikaa.
                         Parhaat tulokset pääsevät kunniataululle!
