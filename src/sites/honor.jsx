@@ -16,7 +16,7 @@ function Honor() {
     return (
         <div>
             <nav></nav>
-            <h1>Kunniataulukko</h1>
+            <h1 className='otsikko'>Kunniataulukko</h1>
             {leaderboardData.map((item, index) => (
                 <LeaderboardElement 
                     key={index}

@@ -1,9 +1,10 @@
 .leaderboard-element {
     padding: 10px;
-    margin: 5px;
+    margin-left: 2.5%;
+    margin-bottom: 12px;
     border-radius: 10px;
-    width: 841px;
-    height: 46.5px;
+    width: 95%;
+    height: 45px;
     display: grid;
     grid-template-columns: 100px 100px 200px; /* Fixed widths for each column */
     align-items: center;
@@ -35,5 +36,5 @@
 }
   
 .high-position {
-    background-color: #f8d7da; 
+    background-color: #3B5481; 
 }
