@@ -91,5 +91,10 @@ button {
 
     .container {
         margin-left: 8.83%;
+        margin-top: 50px;
+    }
+
+    .text-container {
+        margin-top: 50px;
     }
 }
