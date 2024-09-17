@@ -1,5 +1,5 @@
 import React from 'react';
-import "../Kysely.css";
+import "./Kysely.css";
 import timer from "../components/timer.svg"
 
 export default function Kysely() {
