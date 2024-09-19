@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import "./honor.css";
+import "./leaderboard.css";
 import LeaderboardElement from '../components/leaderboardelement.jsx'; 
 
-function Honor() {
+function Leaderboard() {
     const [leaderboardData, setLeaderboardData] = useState([]);
 
     useEffect(() => {
@@ -29,4 +29,4 @@ function Honor() {
     );
 }
 
-export default Honor;
+export default Leaderboard;

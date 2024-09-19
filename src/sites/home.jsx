@@ -1,8 +1,15 @@
 import React from 'react';
 import "./home.css"
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function Home() {
+    const navigate = useNavigate();
+
+    const ToLeaderBoard = () => {
+      navigate('/leaderboard');
+    };
+
     const [inputValue, setInputValue] = useState('');
 
     const handleButtonClick = () => {
@@ -19,6 +26,7 @@ function Home() {
                         Sinulla on yhteensä 12 minuuttia aikaa.
                         Parhaat tulokset pääsevät kunniataululle!
                     </p>
+                    <button className='kunnia' onClick={handleButtonClick}>Kunniataulukko</button>
                 </div>
                 <div className="container">
                     <input 
@@ -27,7 +35,7 @@ function Home() {
                         onChange={(e) => setInputValue(e.target.value)} 
                         placeholder="Ryhmän nimi"
                     />
-                    <button className="play-button" onClick={handleButtonClick}>Pelaa</button>
+                    <button className="play-button" onClick={ToLeaderBoard}>Pelaa</button>
                 </div>
             </div>
         </div>

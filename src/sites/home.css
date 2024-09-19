@@ -86,6 +86,12 @@ button {
     width: 145px;
 }
 
+.kunnia {
+    margin-top: 25px;
+    height: 48px;
+    width: 395px;
+}
+
 @media (max-width: 1000px) {
 
     .flex-container {
