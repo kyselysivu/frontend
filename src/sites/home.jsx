@@ -17,7 +17,7 @@ function Home() {
     const handleButtonClick = () => {
       console.log(inputValue);
       setCookie('user', inputValue, { sameSite: 'none', secure: true });
-      console.log(cookies.value);
+      console.log("cookie:", cookies.user);
       navigate('/questions');
     };
     return (
