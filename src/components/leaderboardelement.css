@@ -11,6 +11,10 @@
     gap: 10px;
 }
 
+.leaderboard-element p, .leaderboard-element h2 {
+    text-shadow: 1px 1px 1px #000000;
+}
+
 .points, .time, .team {
     font-size: 20px;
     font-weight: bold;
