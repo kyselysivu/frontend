@@ -107,8 +107,9 @@ export default function Kysely() {
   }, [currentQuestion, questionsLoaded]);
 
   useEffect(() => {
+    const parsedCookie = document.cookie.split("=")[1] //ottaa nimen cookiesta
     if (timeLeft <= 0) {
-      setGameOverTitle("Aika loppui!");
+      setGameOverTitle("ryhmän: " + parsedCookie + " Aika loppui!");
       setIsGameOver(true);
       return;
     }
@@ -243,7 +244,7 @@ export default function Kysely() {
           onClose={() => setIsGameOver(false)}
           title={gameOverTitle}
           score={score}
-          timeElapsed={gameOverTitle !== "Aika loppui!" ? formatTime(timeElapsed) : null} // Conditionally pass the formatted time elapsed
+          timeElapsed={gameOverTitle !== "Aika loppui!" ? formatTime(timeElapsed) : null}
       />
     </div>
   );
