@@ -17,6 +17,7 @@ export default function Kysely() {
   const [subtextContents, setSubtextContents] = useState("");
   const [timeLeft, setTimeLeft] = useState(60 * 12);
   const [selectedAnswers, setSelectedAnswers] = useState([]);
+  const [imageSrc, setImageSrc] = useState("");
 
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
@@ -76,6 +77,16 @@ export default function Kysely() {
     }
   }, [currentQuestion, questionsLoaded]);
 
+  // Fetch image URL from backend
+  useEffect(() => {
+    fetch("http://localhost:3000/api/get-image-url")
+      .then((response) => response.json())
+      .then((data) => {
+        setImageSrc(data.imageUrl);
+      })
+      .catch((error) => console.error("Error fetching image URL:", error));
+  }, []);
+
   useEffect(() => {
     // Exit early if the timer has reached zero
     if (timeLeft <= 0) return;
@@ -100,6 +111,13 @@ export default function Kysely() {
         <img src={timer} />
         <p>{formatTime(timeLeft)}</p>
       </div>
+      {imageSrc ? (
+        <div className='question_image'>
+          <img src={imageSrc} alt="image" />
+        </div>
+      ) : (
+        ""
+      )}
       <div className="questions">
         <div className="questions-container" style={{ transition: 'opacity 0.5s ease', opacity: questionsLoaded ? 1 : 0 }}>
           {
