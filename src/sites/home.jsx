@@ -26,7 +26,7 @@ function Home() {
                         Sinulla on yhteensä 12 minuuttia aikaa.
                         Parhaat tulokset pääsevät kunniataululle!
                     </p>
-                    <button className='kunnia' onClick={handleButtonClick}>Kunniataulukko</button>
+                    <button className='kunnia' onClick={ToLeaderBoard}>Kunniataulukko</button>
                 </div>
                 <div className="container">
                     <input 
@@ -35,7 +35,7 @@ function Home() {
                         onChange={(e) => setInputValue(e.target.value)} 
                         placeholder="Ryhmän nimi"
                     />
-                    <button className="play-button" onClick={ToLeaderBoard}>Pelaa</button>
+                    <button className="play-button" onClick={handleButtonClick}>Pelaa</button>
                 </div>
             </div>
         </div>
