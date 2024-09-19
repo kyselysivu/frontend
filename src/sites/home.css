@@ -92,6 +92,10 @@ button {
     width: 395px;
 }
 
+.kunnialinkki {
+    display: none;
+}
+
 @media (max-width: 1000px) {
 
     .flex-container {
@@ -116,7 +120,17 @@ button {
         margin-left: auto;
     }
 
+    .kunnia {
+        display: none;
+    }
+
     .text-container {
         margin-top: 50px;
+    }
+
+    .kunnialinkki {
+        margin-top: 15px;
+        margin-left: 15px;
+        display: block;
     }
 }

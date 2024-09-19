@@ -36,6 +36,7 @@ function Home() {
                         placeholder="Ryhmän nimi"
                     />
                     <button className="play-button" onClick={handleButtonClick}>Pelaa</button>
+                    <a href="/leaderboard" className='kunnialinkki'>Kunniataulukko</a>
                 </div>
             </div>
         </div>
