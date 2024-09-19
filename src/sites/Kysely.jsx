@@ -206,17 +206,15 @@ export default function Kysely() {
 
                 setSubtextContents(subtext);
                 setShouldShowSubtext(true);
-
-                // Show game over popup if all questions are answered
-                if (currentQuestion >= allQuestions.questions.length) {
-                  setGameOverTitle("Onneksi olkoon!");
-                  setIsGameOver(true);
-                }
               }, 1000);
 
               setTimeout(() => {
-                // Fade the button back in after 5 seconds
-                setButtonContents("Seuraava");
+                if (currentQuestion >= allQuestions.questions.length) {
+                  setButtonContents("Valmis!");
+                } else {
+                  setButtonContents("Seuraava");
+                }
+
                 setButtonShouldGoToNextQuestion(true);
                 setSubmitButtonVisible(true);
               }, 3000);
