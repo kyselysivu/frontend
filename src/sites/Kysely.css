@@ -29,6 +29,18 @@ body
     margin-bottom: 5%;
 }
 
+.question_image {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px; /* Optional: Add some margin to the top */
+    margin-bottom: 20px; /* Optional: Add some margin to the bottom */
+}
+
+.question_image img {
+    border-radius: 15px;
+    width: 90%;
+    max-width: 800px;
+}
 .timer
 {
     /*text-align: center;*/
@@ -51,7 +63,8 @@ body
 {
     background-color: #3B5481;
     height: 48px;
-    width: 481px;
+    width: 100%;
+    max-width: 500px;
     border-radius: 20px;
     margin-inline: 25px;
     margin-block: 10px;

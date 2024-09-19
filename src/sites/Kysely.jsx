@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import "./Kysely.css";
-import timer from "../components/timer.svg"
+import timer from "../components/timer.svg";
 import { Question } from '../components/Question';
+import GameOverPopup from '../components/GameOverPopup.jsx';
 
 export default function Kysely() {
   const [allQuestions, setAllQuestions] = useState([]);
@@ -18,6 +19,9 @@ export default function Kysely() {
   const [timeLeft, setTimeLeft] = useState(60 * 12);
   const [selectedAnswers, setSelectedAnswers] = useState([]);
   const [imageSrc, setImageSrc] = useState("");
+  const [isGameOver, setIsGameOver] = useState(false);
+  const [gameOverTitle, setGameOverTitle] = useState("");
+  const [score, setScore] = useState(0);
 
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
@@ -45,6 +49,12 @@ export default function Kysely() {
     return allQuestions.questions.find(question => question.id === currentQuestion).question_title;
   }
 
+  function getImageSrcForCurrentQuestion() {
+    if (!allQuestions.questions) return "";
+    const currentQuestionData = allQuestions.questions.find(question => question.id === currentQuestion);
+    return currentQuestionData ? currentQuestionData.image_src : "";
+  }
+
   // Fetch questions once when component mounts
   useEffect(() => {
     fetch("http://localhost:3000/api/questions")
@@ -53,6 +63,14 @@ export default function Kysely() {
         setAllQuestions(data);
         console.log(data);
         setQuestionsLoaded(true);
+
+        // Preload the image for the current question
+        const imageSrc = getImageSrcForCurrentQuestion();
+        if (imageSrc) {
+          const img = new Image();
+          img.src = imageSrc;
+          img.onload = () => setImageSrc(imageSrc);
+        }
       })
       .catch((error) => console.error("Error fetching questions:", error));
   }, []);
@@ -72,33 +90,38 @@ export default function Kysely() {
           setAllAnswers(data);
           console.log(data);
           setAnswersLoaded(true);
+
+          // Preload the image for the current question
+          const imageSrc = getImageSrcForCurrentQuestion();
+          if (imageSrc) {
+            const img = new Image();
+            img.src = imageSrc;
+            img.onload = () => setImageSrc(imageSrc);
+          }
         })
         .catch((error) => console.error("Error fetching answers:", error));
     }
   }, [currentQuestion, questionsLoaded]);
 
-  // Fetch image URL from backend
   useEffect(() => {
-    fetch("http://localhost:3000/api/get-image-url")
-      .then((response) => response.json())
-      .then((data) => {
-        setImageSrc(data.imageUrl);
-      })
-      .catch((error) => console.error("Error fetching image URL:", error));
-  }, []);
+    if (timeLeft <= 0) {
+      setGameOverTitle("Aika loppui!");
+      setIsGameOver(true);
+      return;
+    }
 
-  useEffect(() => {
-    // Exit early if the timer has reached zero
-    if (timeLeft <= 0) return;
-
-    // Set an interval to decrease the timer every second
     const timerId = setInterval(() => {
       setTimeLeft((prevTime) => prevTime - 1);
     }, 1000);
 
-    // Cleanup the interval on component unmount or when timeLeft changes
     return () => clearInterval(timerId);
   }, [timeLeft]);
+
+  useEffect(() => {
+    // Calculate the score whenever selectedAnswers changes
+    const correctAnswers = getCorrectlyAnsweredOptions().length;
+    setScore(correctAnswers);
+  }, [selectedAnswers]);
 
   return (
     <div>
@@ -108,7 +131,7 @@ export default function Kysely() {
       }
       </div>
       <div className="timer" style={{ gap: '10px' }}>
-        <img src={timer} />
+        <img src={timer} alt='timer'/>
         <p>{formatTime(timeLeft)}</p>
       </div>
       {imageSrc ? (
@@ -153,11 +176,16 @@ export default function Kysely() {
           className='submit-button'
           onClick={() => {
             if (buttonShouldGoToNextQuestion) {
-              setShouldShowCorrectAnswer(false);
-              setCurrentQuestion(currentQuestion + 1);
-              setSelectedAnswers([]);
-              setShouldShowSubtext(false);
-              setButtonShouldGoToNextQuestion(false);
+              if (currentQuestion >= allQuestions.questions.length) {
+                setGameOverTitle("Onneksi olkoon!");
+                setIsGameOver(true);
+              } else {
+                setShouldShowCorrectAnswer(false);
+                setCurrentQuestion(currentQuestion + 1);
+                setSelectedAnswers([]);
+                setShouldShowSubtext(false);
+                setButtonShouldGoToNextQuestion(false);
+              }
             } else {
               // Fade out the button
               setSubmitButtonVisible(false);
@@ -178,6 +206,12 @@ export default function Kysely() {
 
                 setSubtextContents(subtext);
                 setShouldShowSubtext(true);
+
+                // Show game over popup if all questions are answered
+                if (currentQuestion >= allQuestions.questions.length) {
+                  setGameOverTitle("Onneksi olkoon!");
+                  setIsGameOver(true);
+                }
               }, 1000);
 
               setTimeout(() => {
@@ -186,9 +220,6 @@ export default function Kysely() {
                 setButtonShouldGoToNextQuestion(true);
                 setSubmitButtonVisible(true);
               }, 3000);
-
-              // Uncomment if needed to go to the next question
-              // setCurrentQuestion(currentQuestion + 1);
             }
           }}
           disabled={!submitButtonVisible}
@@ -196,6 +227,12 @@ export default function Kysely() {
           {buttonContents}
         </button>
       </div>
+      <GameOverPopup 
+        isVisible={isGameOver} 
+        onClose={() => setIsGameOver(false)} 
+        title={gameOverTitle}
+        score={score}
+      />
     </div>
   );
-};
+}
