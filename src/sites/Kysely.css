@@ -74,7 +74,7 @@ body
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    width: 1200px;
+    width: 75%;
     max-width: 1200px;
 }
 
@@ -85,4 +85,26 @@ body
 .submit-button {
     padding: 15px;
     width: 200px;
+}
+
+@media (max-width: 700px)
+{
+    .questions-container {
+        width: 100%;
+    }
+
+    #quiz-submit-button {
+        width: 100%;
+    }
+
+    .questions-container {
+        max-width: 500px;
+    }
+}
+
+@media (max-width: 1650px)
+{
+    .questions-container {
+        max-width: 500px;
+    }
 }

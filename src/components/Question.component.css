@@ -19,3 +19,9 @@
 .question-incorrect {
     background-color: #BB4C4C !important;
 }
+
+@media (max-width: 700px) {
+    .question {
+        margin-inline: 0;
+    }
+}

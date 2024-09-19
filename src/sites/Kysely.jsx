@@ -142,94 +142,98 @@ export default function Kysely() {
         ""
       )}
       <div className="questions">
-        <div className="questions-container" style={{ transition: 'opacity 0.5s ease', opacity: questionsLoaded ? 1 : 0 }}>
+        <div className="questions-container"
+             style={{transition: 'opacity 0.5s ease', opacity: questionsLoaded ? 1 : 0}}>
           {
             (questionsLoaded && answersLoaded) ? getOptionsForCurrentQuestion().map((option, index) => {
-              return <Question 
-                key={index} 
-                index={index + 1} 
-                question={option.answer_title} 
-                active={selectedAnswers.includes(option.id)}
-                setActiveCallback={(active) => {
-                  if (active) {
-                    setSelectedAnswers([...selectedAnswers, option.id]);
-                  } else {
-                    setSelectedAnswers(selectedAnswers.filter((id) => id !== option.id));
-                  }
-                }}
-                className={shouldShowCorrectAnswer ? (option.is_correct == 1 ? 'question-correct' : 'question-incorrect') : ''} />
+              return <Question
+                  key={index}
+                  index={index + 1}
+                  question={option.answer_title}
+                  active={selectedAnswers.includes(option.id)}
+                  setActiveCallback={(active) => {
+                    if (active) {
+                      setSelectedAnswers([...selectedAnswers, option.id]);
+                    } else {
+                      setSelectedAnswers(selectedAnswers.filter((id) => id !== option.id));
+                    }
+                  }}
+                  className={shouldShowCorrectAnswer ? (option.is_correct == 1 ? 'question-correct' : 'question-incorrect') : ''}/>
             }) : "Loading..."
           }
+          <button
+              style={{
+                opacity: submitButtonVisible ? 1 : 0,
+                visibility: submitButtonVisible ? 'visible' : 'hidden',
+                transition: 'opacity 0.5s ease, visibility 0.5s ease',
+                justifyContent: 'center',
+                marginTop: '20px',
+                display: 'flex',
+              }}
+              id="quiz-submit-button"
+              className='submit-button'
+              onClick={() => {
+                if (buttonShouldGoToNextQuestion) {
+                  if (currentQuestion >= allQuestions.questions.length) {
+                    setGameOverTitle("Onneksi olkoon!");
+                    setIsGameOver(true);
+                  } else {
+                    setShouldShowCorrectAnswer(false);
+                    setCurrentQuestion(currentQuestion + 1);
+                    setSelectedAnswers([]);
+                    setShouldShowSubtext(false);
+                    setButtonShouldGoToNextQuestion(false);
+                  }
+                } else {
+                  // Fade out the button
+                  setSubmitButtonVisible(false);
+
+                  setTimeout(() => {
+                    setShouldShowCorrectAnswer(true);
+
+                    let subtext = "Vastasit oikein " +
+                        getCorrectlyAnsweredOptions().length +
+                        "/" +
+                        getCorrectAnswers().length +
+                        " vaihtoehtoon! ";
+
+                    // Check if user got any answers incorrect
+                    if (getIncorrectlyAnsweredOptions().length > 0) {
+                      subtext += (getIncorrectlyAnsweredOptions().length) + " valintaasi oli väärin :(";
+                    }
+
+                    setSubtextContents(subtext);
+                    setShouldShowSubtext(true);
+                  }, 1000);
+
+                  setTimeout(() => {
+                    if (currentQuestion >= allQuestions.questions.length) {
+                      setButtonContents("Valmis!");
+                    } else {
+                      setButtonContents("Seuraava");
+                    }
+
+                    setButtonShouldGoToNextQuestion(true);
+                    setSubmitButtonVisible(true);
+                  }, 3000);
+                }
+              }}
+              disabled={!submitButtonVisible}
+          >
+            {buttonContents}
+          </button>
         </div>
       </div>
-      <p style={{ display: shouldShowSubtext ? 'flex' : 'none', justifyContent: 'center', marginTop: '20px' }}>{subtextContents}</p>
-      <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <button
-          style={{
-            opacity: submitButtonVisible ? 1 : 0,
-            visibility: submitButtonVisible ? 'visible' : 'hidden',
-            transition: 'opacity 0.5s ease, visibility 0.5s ease',
-            justifyContent: 'center',
-            marginTop: '20px',
-            display: 'flex',
-          }}
-          className='submit-button'
-          onClick={() => {
-            if (buttonShouldGoToNextQuestion) {
-              if (currentQuestion >= allQuestions.questions.length) {
-                setGameOverTitle("Onneksi olkoon!");
-                setIsGameOver(true);
-              } else {
-                setShouldShowCorrectAnswer(false);
-                setCurrentQuestion(currentQuestion + 1);
-                setSelectedAnswers([]);
-                setShouldShowSubtext(false);
-                setButtonShouldGoToNextQuestion(false);
-              }
-            } else {
-              // Fade out the button
-              setSubmitButtonVisible(false);
-              
-              setTimeout(() => {
-                setShouldShowCorrectAnswer(true);
-
-                let subtext = "Vastasit oikein " +
-                  getCorrectlyAnsweredOptions().length +
-                  "/" +
-                  getCorrectAnswers().length + 
-                  " vaihtoehtoon! ";
-
-                // Check if user got any answers incorrect
-                if (getIncorrectlyAnsweredOptions().length > 0) {
-                  subtext += (getIncorrectlyAnsweredOptions().length) + " valintaasi oli väärin :(";
-                }
-
-                setSubtextContents(subtext);
-                setShouldShowSubtext(true);
-              }, 1000);
-
-              setTimeout(() => {
-                if (currentQuestion >= allQuestions.questions.length) {
-                  setButtonContents("Valmis!");
-                } else {
-                  setButtonContents("Seuraava");
-                }
-
-                setButtonShouldGoToNextQuestion(true);
-                setSubmitButtonVisible(true);
-              }, 3000);
-            }
-          }}
-          disabled={!submitButtonVisible}
-        >
-          {buttonContents}
-        </button>
-      </div>
-      <GameOverPopup 
-        isVisible={isGameOver} 
-        onClose={() => setIsGameOver(false)} 
-        title={gameOverTitle}
-        score={score}
+      <p style={{
+        display: shouldShowSubtext ? 'flex' : 'none',
+        justifyContent: 'center',
+        marginTop: '20px'
+      }}>{subtextContents}</p>
+      <GameOverPopup
+          isVisible={isGameOver}
+          onClose={() => setIsGameOver(false)}
+          title={gameOverTitle}
+          score={score}
       />
     </div>
   );
