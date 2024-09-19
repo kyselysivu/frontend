@@ -2,6 +2,7 @@ import React from 'react';
 import "./home.css"
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
 
 function Home() {
     const navigate = useNavigate();
@@ -11,9 +12,13 @@ function Home() {
     };
 
     const [inputValue, setInputValue] = useState('');
+    const [cookies, setCookie] = useCookies(['user']);
 
     const handleButtonClick = () => {
-      console.log(inputValue); // Replace this with your desired action
+      console.log(inputValue);
+      setCookie('user', inputValue, { sameSite: 'none', secure: true });
+      console.log(cookies.value);
+      navigate('/questions');
     };
     return (
         <div>
@@ -32,7 +37,7 @@ function Home() {
                     <input 
                         type="text" 
                         value={inputValue} 
-                        onChange={(e) => setInputValue(e.target.value)} 
+                        onChange={(e) => setInputValue(e.target.value)}
                         placeholder="Ryhmän nimi"
                     />
                     <button className="play-button" onClick={handleButtonClick}>Pelaa</button>
