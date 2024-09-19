@@ -22,6 +22,9 @@ export default function Kysely() {
   const [isGameOver, setIsGameOver] = useState(false);
   const [gameOverTitle, setGameOverTitle] = useState("");
   const [score, setScore] = useState(0);
+  const [timeElapsed, setTimeElapsed] = useState(0);
+
+  const initialTime = 60 * 12; // Initial time in seconds
 
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
@@ -123,6 +126,13 @@ export default function Kysely() {
     setScore(correctAnswers);
   }, [selectedAnswers]);
 
+  const handleFinishQuiz = () => {
+    setGameOverTitle("Onneksi olkoon!");
+    setIsGameOver(true);
+    setTimeElapsed(initialTime - timeLeft);
+    setTimeLeft(0); // Stop the timer
+  };
+
   return (
     <div>
       <div className="navbar"></div>
@@ -175,8 +185,7 @@ export default function Kysely() {
               onClick={() => {
                 if (buttonShouldGoToNextQuestion) {
                   if (currentQuestion >= allQuestions.questions.length) {
-                    setGameOverTitle("Onneksi olkoon!");
-                    setIsGameOver(true);
+                    handleFinishQuiz();
                   } else {
                     setShouldShowCorrectAnswer(false);
                     setCurrentQuestion(currentQuestion + 1);
@@ -234,6 +243,7 @@ export default function Kysely() {
           onClose={() => setIsGameOver(false)}
           title={gameOverTitle}
           score={score}
+          timeElapsed={gameOverTitle !== "Aika loppui!" ? formatTime(timeElapsed) : null} // Conditionally pass the formatted time elapsed
       />
     </div>
   );
