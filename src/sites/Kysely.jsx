@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import "./Kysely.css";
 import timer from "../components/timer.svg";
+import diamond from "../components/diamond.svg"; // Add the diamond icon
 import { Question } from '../components/Question';
 import GameOverPopup from '../components/GameOverPopup.jsx';
 
@@ -28,6 +29,11 @@ export default function Kysely() {
     const [gameOverTitle, setGameOverTitle] = useState("");
     const [score, setScore] = useState(0);
     const [timeElapsed, setTimeElapsed] = useState(0);
+    const [timerId, setTimerId] = useState(null);
+    const [totalPoints, setTotalPoints] = useState(0);
+    const [isAnswerSelected, setIsAnswerSelected] = useState(false);
+
+    const initialTime = 60 * 12; // Initial time in seconds
 
     const formatTime = (seconds) => {
         const minutes = Math.floor(seconds / 60);
@@ -96,25 +102,41 @@ export default function Kysely() {
     }, [currentQuestion]);
 
     useEffect(() => {
-        const parsedCookie = document.cookie.split("=")[1] //ottaa nimen cookiesta
+        const parsedCookie = document.cookie.split("=")[1]; // ottaa nimen cookiesta
         if (timeLeft <= 0) {
             setGameOverTitle("ryhmän: " + parsedCookie + " Aika loppui!");
             setIsGameOver(true);
+            fetchScore();
             return;
         }
 
-        const timerId = setInterval(() => {
+        const id = setInterval(() => {
             setTimeLeft((prevTime) => prevTime - 1);
         }, 1000);
+        setTimerId(id);
 
-        return () => clearInterval(timerId);
+        return () => clearInterval(id);
     }, [timeLeft]);
+
+    const fetchScore = () => {
+        fetch("http://localhost:3000/api/end", {
+            method: 'POST',
+            credentials: 'include'
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log("Received score:", data);
+                setScore(data.score);
+            })
+            .catch((error) => console.error("Error fetching score:", error));
+    };
 
     const handleFinishQuiz = () => {
         setGameOverTitle("Onneksi olkoon!");
-        setIsGameOver(true);
         setTimeElapsed(initialTime - timeLeft);
-        setTimeLeft(0); // Stop the timer
+        setIsGameOver(true);
+        clearInterval(timerId); // Stop the timer
+        fetchScore();
     };
 
     return (
@@ -139,6 +161,8 @@ export default function Kysely() {
             <div className="timer" style={{ gap: '10px' }}>
                 <img src={timer} alt='timer' />
                 <p>{formatTime(timeLeft)}</p>
+                <img src={diamond} alt='points' />
+                <p>{totalPoints}</p>
             </div>
             <div className="questions">
                 <div className="questions-container"
@@ -153,8 +177,11 @@ export default function Kysely() {
                                 setActiveCallback={(active) => {
                                     if (active) {
                                         setSelectedAnswers([...selectedAnswers, option.id]);
+                                        setIsAnswerSelected(true);
                                     } else {
-                                        setSelectedAnswers(selectedAnswers.filter((id) => id !== option.id));
+                                        const newSelectedAnswers = selectedAnswers.filter((id) => id !== option.id);
+                                        setSelectedAnswers(newSelectedAnswers);
+                                        setIsAnswerSelected(newSelectedAnswers.length > 0);
                                     }
                                 }}
                                 className={shouldShowCorrectAnswer ? (isAnswerCorrect(option.id) ? 'question-correct' : 'question-incorrect') : ''} />
@@ -171,10 +198,10 @@ export default function Kysely() {
                         display: 'flex',
                     }}
                     id="quiz-submit-button"
-                    className='submit-button'
+                    className={`submit-button ${!isAnswerSelected ? 'disabled' : ''}`}
                     onClick={() => {
                         if (buttonShouldGoToNextQuestion) {
-                            if (currentQuestion >= questionIds.length) {
+                            if (currentQuestionIndex >= questionIds.length - 1) {
                                 handleFinishQuiz();
                             } else {
                                 setShouldShowCorrectAnswer(false);
@@ -183,6 +210,8 @@ export default function Kysely() {
                                 setSelectedAnswers([]);
                                 setShouldShowSubtext(false);
                                 setButtonShouldGoToNextQuestion(false);
+                                setIsAnswerSelected(false);
+                                setButtonContents("Vastaa");
                             }
                         } else {
                             // Fade out the button
@@ -209,6 +238,7 @@ export default function Kysely() {
                                     console.log("Received answer data for question", currentQuestion, ":", data);
                                     setCorrectOptions(data.correct);
                                     setIncorrectOptions(data.incorrect);
+                                    setTotalPoints(data.total_points); // Update total points
 
                                     console.log("Selected answers:", selectedAnswers);
                                     const getAmountOfIncorrectlyPlacedAnswers = () => {
@@ -227,10 +257,9 @@ export default function Kysely() {
                                             "/" +
                                             data.correct.length +
                                             " vaihtoehtoon! ";
-
                                         // Check if user got any answers incorrect
-                                        if (getAmountOfIncorrectlyPlacedAnswers().length > 0) {
-                                            subtext += (getAmountOfIncorrectlyPlacedAnswers().length) + " valintaasi oli väärin :(";
+                                        if (getAmountOfIncorrectlyPlacedAnswers() > 0) {
+                                            subtext += (getAmountOfIncorrectlyPlacedAnswers()) + " valintaasi oli väärin :(";
                                         }
 
                                         setSubtextContents(subtext);
@@ -238,12 +267,7 @@ export default function Kysely() {
                                     }, 1000);
 
                                     setTimeout(() => {
-                                        if (currentQuestion >= questionIds.length) {
-                                            setButtonContents("Valmis!");
-                                        } else {
-                                            setButtonContents("Seuraava");
-                                        }
-
+                                        setButtonContents("Seuraava");
                                         setButtonShouldGoToNextQuestion(true);
                                         setSubmitButtonVisible(true);
                                     }, 3000);
@@ -251,7 +275,7 @@ export default function Kysely() {
                                 .catch((error) => console.error("Error submitting answers:", error));
                         }
                     }}
-                    disabled={!submitButtonVisible}
+                    disabled={!isAnswerSelected}
                 >
                     {buttonContents}
                 </button>
