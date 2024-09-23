@@ -36,8 +36,13 @@ body
 
 .question_image img {
     border-radius: 15px;
-    width: 90%;
-    max-width: 650px;
+    width: auto;
+    max-height: 300px;
+}
+
+.question_additional_html {
+    width: max-content;
+    margin: auto;
 }
 .timer
 {
@@ -52,6 +57,10 @@ body
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+
+    flex-direction: column;
+    align-content: center;
+    align-items: center;
 
     width: 90%;
     margin: auto;

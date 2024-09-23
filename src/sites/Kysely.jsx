@@ -1,9 +1,8 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import "./Kysely.css";
 import timer from "../components/timer.svg";
-import {Question} from '../components/Question';
+import { Question } from '../components/Question';
 import GameOverPopup from '../components/GameOverPopup.jsx';
-import {useCookies} from "react-cookie";
 
 export default function Kysely() {
     const [questionIds, setQuestionIds] = useState([]);
@@ -24,6 +23,7 @@ export default function Kysely() {
     const [timeLeft, setTimeLeft] = useState(60 * 12);
     const [selectedAnswers, setSelectedAnswers] = useState([]);
     const [imageSrc, setImageSrc] = useState("");
+    const [additionalHtml, setAdditionalHtml] = useState("");
     const [isGameOver, setIsGameOver] = useState(false);
     const [gameOverTitle, setGameOverTitle] = useState("");
     const [score, setScore] = useState(0);
@@ -54,7 +54,7 @@ export default function Kysely() {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({team_name: document.cookie.split("=")[1]}),
+            body: JSON.stringify({ team_name: document.cookie.split("=")[1] }),
             credentials: 'include'
         })
             .then((response) => response.json())
@@ -68,6 +68,7 @@ export default function Kysely() {
     }, []);
 
     useEffect(() => {
+        setImageSrc("");
         if (currentQuestion === undefined || currentQuestion === null) return;
         fetch(`http://localhost:3000/api/questions/${currentQuestion}`)
             .then((response) => response.json())
@@ -82,6 +83,12 @@ export default function Kysely() {
                     img.onload = () => setImageSrc(data.image_src);
                 } else {
                     setImageSrc("");
+                }
+
+                if (data.additional_html) {
+                    setAdditionalHtml(data.additional_html);
+                } else {
+                    setAdditionalHtml("");
                 }
                 console.log("Fetched question data for question", currentQuestion, ":", data);
             })
@@ -113,24 +120,29 @@ export default function Kysely() {
     return (
         <div>
             <div className="navbar"></div>
-            <div className="header" style={{transition: 'opacity 0.5s ease', opacity: currentQuestionLoaded ? 1 : 0}}>{
+            <div className="header" style={{ transition: 'opacity 0.5s ease', opacity: currentQuestionLoaded ? 1 : 0 }}>{
                 (currentQuestionLoaded) ? getTitleForCurrentQuestion() : "Ladataan..."
             }
             </div>
             {imageSrc ? (
                 <div className='question_image'>
-                    <img src={imageSrc} alt="image"/>
+                    <img src={imageSrc} alt="Ladataan kuvaa..." />
                 </div>
             ) : (
                 ""
             )}
-            <div className="timer" style={{gap: '10px'}}>
-                <img src={timer} alt='timer'/>
+            {additionalHtml ? (
+                <div className='question_additional_html' dangerouslySetInnerHTML={{ __html: additionalHtml }} />
+            ) : (
+                ""
+            )}
+            <div className="timer" style={{ gap: '10px' }}>
+                <img src={timer} alt='timer' />
                 <p>{formatTime(timeLeft)}</p>
             </div>
             <div className="questions">
                 <div className="questions-container"
-                     style={{transition: 'opacity 0.5s ease', opacity: currentQuestionOptionsLoaded ? 1 : 0}}>
+                    style={{ transition: 'opacity 0.5s ease', opacity: currentQuestionOptionsLoaded ? 1 : 0 }}>
                     {
                         (currentQuestionOptionsLoaded) ? getOptionsForCurrentQuestion().map((option, index) => {
                             return <Question
@@ -145,104 +157,105 @@ export default function Kysely() {
                                         setSelectedAnswers(selectedAnswers.filter((id) => id !== option.id));
                                     }
                                 }}
-                                className={shouldShowCorrectAnswer ? (isAnswerCorrect(option.id) ? 'question-correct' : 'question-incorrect') : ''}/>
+                                className={shouldShowCorrectAnswer ? (isAnswerCorrect(option.id) ? 'question-correct' : 'question-incorrect') : ''} />
                         }) : "Loading..."
                     }
-                    <button
-                        style={{
-                            opacity: submitButtonVisible ? 1 : 0,
-                            visibility: submitButtonVisible ? 'visible' : 'hidden',
-                            transition: 'opacity 0.5s ease, visibility 0.5s ease',
-                            justifyContent: 'center',
-                            marginTop: '20px',
-                            display: 'flex',
-                        }}
-                        id="quiz-submit-button"
-                        className='submit-button'
-                        onClick={() => {
-                            if (buttonShouldGoToNextQuestion) {
-                                if (currentQuestion >= questionIds.length) {
-                                    handleFinishQuiz();
-                                } else {
-                                    setShouldShowCorrectAnswer(false);
-                                    setCurrentQuestionIndex(currentQuestionIndex + 1);
-                                    setCurrentQuestion(questionIds[currentQuestionIndex + 1]);
-                                    setSelectedAnswers([]);
-                                    setShouldShowSubtext(false);
-                                    setButtonShouldGoToNextQuestion(false);
-                                }
+                </div>
+                <button
+                    style={{
+                        opacity: submitButtonVisible ? 1 : 0,
+                        visibility: submitButtonVisible ? 'visible' : 'hidden',
+                        transition: 'opacity 0.5s ease, visibility 0.5s ease',
+                        justifyContent: 'center',
+                        marginTop: '20px',
+                        display: 'flex',
+                    }}
+                    id="quiz-submit-button"
+                    className='submit-button'
+                    onClick={() => {
+                        if (buttonShouldGoToNextQuestion) {
+                            if (currentQuestion >= questionIds.length) {
+                                handleFinishQuiz();
                             } else {
-                                // Fade out the button
-                                setSubmitButtonVisible(false);
+                                setShouldShowCorrectAnswer(false);
+                                setCurrentQuestionIndex(currentQuestionIndex + 1);
+                                setCurrentQuestion(questionIds[currentQuestionIndex + 1]);
+                                setSelectedAnswers([]);
+                                setShouldShowSubtext(false);
+                                setButtonShouldGoToNextQuestion(false);
+                            }
+                        } else {
+                            // Fade out the button
+                            setSubmitButtonVisible(false);
 
-                                setCorrectOptions([]);
-                                setIncorrectOptions([]);
+                            setCorrectOptions([]);
+                            setIncorrectOptions([]);
 
-                                console.log("Submitting solutions to question", currentQuestion, ":", selectedAnswers);
+                            console.log("Submitting solutions to question", currentQuestion, ":", selectedAnswers);
 
-                                fetch("http://localhost:3000/api/answer", {
-                                    method: 'POST',
-                                    headers: {
-                                        'Content-Type': 'application/json'
-                                    },
-                                    body: JSON.stringify({
-                                        question_id: currentQuestion,
-                                        answers: selectedAnswers
-                                    }),
-                                    credentials: 'include'
-                                })
-                                    .then((response) => response.json())
-                                    .then((data) => {
-                                        console.log("Received answer data for question", currentQuestion, ":", data);
-                                        setCorrectOptions(data.correct);
-                                        setIncorrectOptions(data.incorrect);
+                            fetch("http://localhost:3000/api/answer", {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    question_id: currentQuestion,
+                                    answers: selectedAnswers
+                                }),
+                                credentials: 'include'
+                            })
+                                .then((response) => response.json())
+                                .then((data) => {
+                                    console.log("Received answer data for question", currentQuestion, ":", data);
+                                    setCorrectOptions(data.correct);
+                                    setIncorrectOptions(data.incorrect);
 
-                                        console.log("Selected answers:", selectedAnswers);
-                                        const getAmountOfIncorrectlyPlacedAnswers = () => {
-                                            return data.incorrect.filter((incorrectOption) => selectedAnswers.includes(incorrectOption)).length;
-                                        };
+                                    console.log("Selected answers:", selectedAnswers);
+                                    const getAmountOfIncorrectlyPlacedAnswers = () => {
+                                        return data.incorrect.filter((incorrectOption) => selectedAnswers.includes(incorrectOption)).length;
+                                    };
 
-                                        const getAmountOfCorrectlyPlacedAnswers = () => {
-                                            return data.correct.filter((correctOption) => selectedAnswers.includes(correctOption)).length;
+                                    const getAmountOfCorrectlyPlacedAnswers = () => {
+                                        return data.correct.filter((correctOption) => selectedAnswers.includes(correctOption)).length;
+                                    }
+
+                                    setTimeout(() => {
+                                        setShouldShowCorrectAnswer(true);
+
+                                        let subtext = "Vastasit oikein " +
+                                            getAmountOfCorrectlyPlacedAnswers() +
+                                            "/" +
+                                            data.correct.length +
+                                            " vaihtoehtoon! ";
+
+                                        // Check if user got any answers incorrect
+                                        if (getAmountOfIncorrectlyPlacedAnswers().length > 0) {
+                                            subtext += (getAmountOfIncorrectlyPlacedAnswers().length) + " valintaasi oli väärin :(";
                                         }
 
-                                        setTimeout(() => {
-                                            setShouldShowCorrectAnswer(true);
+                                        setSubtextContents(subtext);
+                                        setShouldShowSubtext(true);
+                                    }, 1000);
 
-                                            let subtext = "Vastasit oikein " +
-                                                getAmountOfCorrectlyPlacedAnswers() +
-                                                "/" +
-                                                data.correct.length +
-                                                " vaihtoehtoon! ";
+                                    setTimeout(() => {
+                                        if (currentQuestion >= questionIds.length) {
+                                            setButtonContents("Valmis!");
+                                        } else {
+                                            setButtonContents("Seuraava");
+                                        }
 
-                                            // Check if user got any answers incorrect
-                                            if (getAmountOfIncorrectlyPlacedAnswers().length > 0) {
-                                                subtext += (getAmountOfIncorrectlyPlacedAnswers().length) + " valintaasi oli väärin :(";
-                                            }
+                                        setButtonShouldGoToNextQuestion(true);
+                                        setSubmitButtonVisible(true);
+                                    }, 3000);
+                                })
+                                .catch((error) => console.error("Error submitting answers:", error));
+                        }
+                    }}
+                    disabled={!submitButtonVisible}
+                >
+                    {buttonContents}
+                </button>
 
-                                            setSubtextContents(subtext);
-                                            setShouldShowSubtext(true);
-                                        }, 1000);
-
-                                        setTimeout(() => {
-                                            if (currentQuestion >= questionIds.length) {
-                                                setButtonContents("Valmis!");
-                                            } else {
-                                                setButtonContents("Seuraava");
-                                            }
-
-                                            setButtonShouldGoToNextQuestion(true);
-                                            setSubmitButtonVisible(true);
-                                        }, 3000);
-                                    })
-                                    .catch((error) => console.error("Error submitting answers:", error));
-                            }
-                        }}
-                        disabled={!submitButtonVisible}
-                    >
-                        {buttonContents}
-                    </button>
-                </div>
             </div>
             <p style={{
                 display: shouldShowSubtext ? 'flex' : 'none',
