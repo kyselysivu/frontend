@@ -6,7 +6,6 @@ function Leaderboard() {
     const [leaderboardData, setLeaderboardData] = useState([]);
 
     useEffect(() => {
-        // Replace with your backend API endpoint
         fetch('http://localhost:3000/api/leaderboard')
             .then(response => response.json())
             .then(data => setLeaderboardData(data.leaderboard))
@@ -20,8 +19,8 @@ function Leaderboard() {
             {leaderboardData.map((item, index) => (
                 <LeaderboardElement 
                     key={index}
-                    points={item.points} 
-                    team={item.team} 
+                    points={item.score}
+                    team={item.group_name}
                     position={index + 1} // Use the position provided by the API
                 />
             ))}

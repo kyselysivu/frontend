@@ -22,11 +22,9 @@ body
 .header
 {
     width: 90%;
-    margin: auto;
     font-size: xx-large;
-    
-    margin-top: 5%;
-    margin-bottom: 5%;
+    margin: 3% auto;
+    text-align: center;
 }
 
 .question_image {
@@ -39,7 +37,7 @@ body
 .question_image img {
     border-radius: 15px;
     width: 90%;
-    max-width: 800px;
+    max-width: 650px;
 }
 .timer
 {
@@ -99,6 +97,12 @@ body
 
     .questions-container {
         max-width: 500px;
+    }
+
+    .header {
+        margin-bottom: 10%;
+        margin-top: 10%;
+        text-align: left;
     }
 }
 
