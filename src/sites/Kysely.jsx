@@ -61,7 +61,7 @@ export default function Kysely() {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ team_name: document.cookie.split("=")[1] }),
+            body: JSON.stringify({ team_name: document.cookie.split(";")[0].split("=")[1]}),
             credentials: 'include'
         })
             .then((response) => response.json())
@@ -104,7 +104,7 @@ export default function Kysely() {
     }, [currentQuestion]);
 
     useEffect(() => {
-        const parsedCookie = document.cookie.split("=")[1]; // ottaa nimen cookiesta
+        const parsedCookie = document.cookie.split(";")[0].split("=")[1]; // ottaa nimen cookiesta
         if (timeLeft <= 0) {
             setGameOverTitle("ryhmän: " + parsedCookie + " Aika loppui!");
             setIsGameOver(true);
@@ -134,7 +134,8 @@ export default function Kysely() {
     };
 
     const handleFinishQuiz = () => {
-        setGameOverTitle("Onneksi olkoon!");
+        const parsedCookie = document.cookie.split(";")[0].split("=")[1];
+        setGameOverTitle("Onneksi olkoon " + parsedCookie + "!");
         setTimeElapsed(initialTime - timeLeft);
         setIsGameOver(true);
         clearInterval(timerId);
