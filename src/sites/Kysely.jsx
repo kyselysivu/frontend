@@ -35,6 +35,7 @@ export default function Kysely() {
     const [isAnswerSelected, setIsAnswerSelected] = useState(false);
 
     const initialTime = 60 * 12;
+    let startTime = Date.now(); // Initialize startTime
 
     const formatTime = (seconds) => {
         const minutes = Math.floor(seconds / 60);
@@ -85,6 +86,7 @@ export default function Kysely() {
                 setCurrentQuestionLoaded(true);
                 setCurrentQuestionOptions(data.answers);
                 setCurrentQuestionOptionsLoaded(true);
+                startTime = Date.now(); // Set startTime when question data is loaded
                 if (data.image_src) {
                     const img = new Image();
                     img.src = data.image_src;
@@ -208,6 +210,7 @@ export default function Kysely() {
                     id="quiz-submit-button"
                     className={`submit-button ${!isAnswerSelected ? 'disabled' : ''}`}
                     onClick={() => {
+                        const endTime = Date.now(); // Add Endtime when button is pressed
                         if (buttonShouldGoToNextQuestion) {
                             if (currentQuestionIndex >= questionIds.length - 1) {
                                 handleFinishQuiz();
@@ -223,18 +226,19 @@ export default function Kysely() {
                             }
                         } else {
                             setSubmitButtonVisible(false);
-
+                    
                             setCorrectOptions([]);
                             setIncorrectOptions([]);
-
+                    
                             console.log("Submitting solutions to question", currentQuestion, ":", selectedAnswers);
-
                             fetch("http://localhost:3000/api/answer", {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json'
                                 },
                                 body: JSON.stringify({
+                                    start_time: startTime,
+                                    end_time: endTime,
                                     question_id: currentQuestion,
                                     answers: selectedAnswers
                                 }),
@@ -246,19 +250,19 @@ export default function Kysely() {
                                     setCorrectOptions(data.correct);
                                     setIncorrectOptions(data.incorrect);
                                     setTotalPoints(Math.round(data.total_points)); // Update total points and round to nearest integer
-
+                    
                                     console.log("Selected answers:", selectedAnswers);
                                     const getAmountOfIncorrectlyPlacedAnswers = () => {
                                         return data.incorrect.filter((incorrectOption) => selectedAnswers.includes(incorrectOption)).length;
                                     };
-
+                    
                                     const getAmountOfCorrectlyPlacedAnswers = () => {
                                         return data.correct.filter((correctOption) => selectedAnswers.includes(correctOption)).length;
                                     }
-
+                    
                                     setTimeout(() => {
                                         setShouldShowCorrectAnswer(true);
-
+                    
                                         let subtext = "Vastasit oikein " +
                                             getAmountOfCorrectlyPlacedAnswers() +
                                             "/" +
@@ -267,11 +271,11 @@ export default function Kysely() {
                                         if (getAmountOfIncorrectlyPlacedAnswers() > 0) {
                                             subtext += (getAmountOfIncorrectlyPlacedAnswers()) + " valintaasi oli väärin :(";
                                         }
-
+                    
                                         setSubtextContents(subtext);
                                         setShouldShowSubtext(true);
                                     }, 1000);
-
+                    
                                     setTimeout(() => {
                                         setButtonContents("Seuraava");
                                         setButtonShouldGoToNextQuestion(true);
@@ -282,8 +286,8 @@ export default function Kysely() {
                         }
                     }}
                     disabled={!isAnswerSelected}
-                >
-                    {buttonContents}
+                    >
+                        {buttonContents}
                 </button>
 
             </div>
