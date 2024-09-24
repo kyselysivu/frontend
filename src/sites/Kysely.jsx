@@ -246,7 +246,7 @@ export default function Kysely() {
                                     console.log("Received answer data for question", currentQuestion, ":", data);
                                     setCorrectOptions(data.correct);
                                     setIncorrectOptions(data.incorrect);
-                                    setTotalPoints(data.total_points); // Update total points
+                                    setTotalPoints(Math.round(data.total_points)); // Update total points and round to nearest integer
 
                                     console.log("Selected answers:", selectedAnswers);
                                     const getAmountOfIncorrectlyPlacedAnswers = () => {
