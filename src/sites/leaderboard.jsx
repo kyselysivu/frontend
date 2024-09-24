@@ -40,8 +40,10 @@ function Leaderboard() {
 
     return (
         <div>
-            <nav></nav>
-            <h1 className='otsikko'>Kunniataulukko</h1>
+            <nav style={{marginBottom: "15px"}}></nav>
+            <a className='otsikko' href="/">Uusi peli</a>
+            <h1 className='otsikko'>Kunniataulukko </h1>
+            
             {leaderboardData.map((item, index) => (
                 <LeaderboardElement 
                     key={index}
