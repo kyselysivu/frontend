@@ -6,7 +6,7 @@
     width: 95%;
     height: auto;
     display: grid;
-    grid-template-columns: 100px 100px 100px; 
+    grid-template-columns: 100px 100px 1500px; 
     align-items: center;
     gap: 10px;
 }
@@ -55,4 +55,7 @@
         width: auto;
     }
 
+    .team {
+          width: 300%;
+    }
 }
