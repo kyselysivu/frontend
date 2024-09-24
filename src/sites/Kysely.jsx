@@ -34,7 +34,7 @@ export default function Kysely() {
     const [totalPoints, setTotalPoints] = useState(0);
     const [isAnswerSelected, setIsAnswerSelected] = useState(false);
 
-    const initialTime = 60 * 12; // Initial time in seconds
+    const initialTime = 60 * 12;
 
     const formatTime = (seconds) => {
         const minutes = Math.floor(seconds / 60);
@@ -137,7 +137,7 @@ export default function Kysely() {
         setGameOverTitle("Onneksi olkoon!");
         setTimeElapsed(initialTime - timeLeft);
         setIsGameOver(true);
-        clearInterval(timerId); // Stop the timer
+        clearInterval(timerId);
         fetchScore();
     };
 
@@ -222,7 +222,6 @@ export default function Kysely() {
                                 setButtonContents("Vastaa");
                             }
                         } else {
-                            // Fade out the button
                             setSubmitButtonVisible(false);
 
                             setCorrectOptions([]);
@@ -246,7 +245,7 @@ export default function Kysely() {
                                     console.log("Received answer data for question", currentQuestion, ":", data);
                                     setCorrectOptions(data.correct);
                                     setIncorrectOptions(data.incorrect);
-                                    setTotalPoints(data.total_points); // Update total points
+                                    setTotalPoints(data.total_points);
 
                                     console.log("Selected answers:", selectedAnswers);
                                     const getAmountOfIncorrectlyPlacedAnswers = () => {
@@ -265,7 +264,6 @@ export default function Kysely() {
                                             "/" +
                                             data.correct.length +
                                             " vaihtoehtoon! ";
-                                        // Check if user got any answers incorrect
                                         if (getAmountOfIncorrectlyPlacedAnswers() > 0) {
                                             subtext += (getAmountOfIncorrectlyPlacedAnswers()) + " valintaasi oli väärin :(";
                                         }

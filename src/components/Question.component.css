@@ -9,7 +9,7 @@
 }
 
 .question-toggled {
-    background-color: #1D66DC;
+    background-color: #1D66DC !important;
 }
 
 .question-correct {

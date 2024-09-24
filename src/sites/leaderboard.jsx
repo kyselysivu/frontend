@@ -21,7 +21,7 @@ function Leaderboard() {
                     key={index}
                     points={item.score}
                     team={item.group_name}
-                    position={index + 1} // Use the position provided by the API
+                    position={index + 1}
                 />
             ))}
         </div>
