@@ -46,7 +46,7 @@ function Leaderboard() {
                 <LeaderboardElement 
                     key={index}
                     points={Math.round(item.score)}
-                    team={item.group_name}
+                    team={decodeURI(item.group_name)}
                     position={index + 1}
                     time={msToTime(item.time)}
                 />
