@@ -10,7 +10,7 @@
 body
 {
     background-color: #1E293B;
-    margin: 0;  /*  Pistää yläpalkin kiinni reunoihin ja sivun yläosaan */
+    margin: 0;
 }
 
 .navbar
@@ -43,8 +43,8 @@ body
 .question_image {
     display: flex;
     justify-content: center;
-    margin-top: 20px; /* Optional: Add some margin to the top */
-    margin-bottom: 20px; /* Optional: Add some margin to the bottom */
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 .question_image img {
@@ -60,7 +60,6 @@ body
 
 .timer
 {
-    /*text-align: center;*/
     font-size: x-large;
     display: flex;
     justify-content: center;
@@ -92,7 +91,8 @@ body
 }
 
 .question:hover {
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Increase shadow on hover */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    background-color: #466194;
 }
 
 .questions-container {
@@ -113,12 +113,12 @@ body
 }
 
 .submit-button:hover {
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Increase shadow on hover */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
 }
 
 .submit-button:disabled {
-    background-color: #d3d3d3; /* Light gray */
-    color: #a9a9a9; /* Dark gray */
+    background-color: #d3d3d3;
+    color: #a9a9a9;
     cursor: not-allowed;
 }
 
