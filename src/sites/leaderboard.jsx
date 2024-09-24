@@ -45,10 +45,10 @@ function Leaderboard() {
             {leaderboardData.map((item, index) => (
                 <LeaderboardElement 
                     key={index}
-                    points={item.score}
+                    points={Math.round(item.score)}
                     team={item.group_name}
                     position={index + 1}
-                    time={Math.round(msToTime(item.time))}
+                    time={msToTime(item.time)}
                 />
             ))}
         </div>
