@@ -15,8 +15,21 @@ body
 
 .navbar
 {
-    background-color: #1D66DC;
+    position: relative;
+    width: 100%;
+    background-color: #0E3370;
     height: 70px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background-color: #1D66DC;
+    width: 0;
+    transition: width 1s ease-in-out;
 }
 
 .header
@@ -44,6 +57,7 @@ body
     width: max-content;
     margin: auto;
 }
+
 .timer
 {
     /*text-align: center;*/
@@ -106,6 +120,16 @@ body
     background-color: #d3d3d3; /* Light gray */
     color: #a9a9a9; /* Dark gray */
     cursor: not-allowed;
+}
+
+#kysymysnum {
+    position: relative;
+    z-index: 1;
+    font-size: x-large;
+    padding-top: 17px;
+    margin-top: 0;
+    text-align: center;
+    color: white;
 }
 
 @media (max-width: 700px)

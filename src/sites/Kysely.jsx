@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import "./Kysely.css";
 import timer from "../components/timer.svg";
-import diamond from "../components/diamond.svg"; // Add the diamond icon
+import diamond from "../components/diamond.svg";
 import { Question } from '../components/Question';
 import GameOverPopup from '../components/GameOverPopup.jsx';
 
 export default function Kysely() {
+    const [questionCount, setQuestionCount] = useState(null);
     const [questionIds, setQuestionIds] = useState([]);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [currentQuestion, setCurrentQuestion] = useState(null);
@@ -66,6 +67,7 @@ export default function Kysely() {
             .then((response) => response.json())
             .then((data) => {
                 console.log("Received game metadata:", data);
+                setQuestionCount(data.questions.length);
                 setQuestionIds(data.questions);
                 setCurrentQuestion(data.questions[0]);
                 setTimeLeft(data.time_limit);
@@ -141,7 +143,13 @@ export default function Kysely() {
 
     return (
         <div>
-            <div className="navbar"></div>
+            <div className="navbar">
+                <div
+                    className="progress-bar-fill"
+                    style={{ width: `${(currentQuestionIndex / questionCount) * 100}%` }}
+                ></div>
+                <h1 id='kysymysnum'>Kysymys {currentQuestionIndex + 1}/{questionCount}</h1>
+            </div>
             <div className="header" style={{ transition: 'opacity 0.5s ease', opacity: currentQuestionLoaded ? 1 : 0 }}>{
                 (currentQuestionLoaded) ? getTitleForCurrentQuestion() : "Ladataan..."
             }
