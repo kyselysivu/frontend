@@ -16,7 +16,9 @@ function Home() {
 
     const handleButtonClick = () => {
       console.log(inputValue);
-      setCookie('user', inputValue, { sameSite: 'none', secure: true });
+      setCookie('user', inputValue, { sameSite: 'none', secure: false });
+      setCookie('team', '', { expires: new Date(0) });
+
       console.log("cookie:", cookies.user);
       navigate('/questions');
     };

@@ -10,40 +10,56 @@
 body
 {
     background-color: #1E293B;
-    margin: 0;  /*  Pistää yläpalkin kiinni reunoihin ja sivun yläosaan */
+    margin: 0;
 }
 
 .navbar
 {
-    background-color: #1D66DC;
+    position: relative;
+    width: 100%;
+    background-color: #0E3370;
     height: 70px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background-color: #1D66DC;
+    width: 0;
+    transition: width 1s ease-in-out;
 }
 
 .header
 {
     width: 90%;
-    margin: auto;
     font-size: xx-large;
-    
-    margin-top: 5%;
-    margin-bottom: 5%;
+    margin: 3% auto;
+    text-align: center;
 }
 
 .question_image {
     display: flex;
     justify-content: center;
-    margin-top: 20px; /* Optional: Add some margin to the top */
-    margin-bottom: 20px; /* Optional: Add some margin to the bottom */
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 .question_image img {
     border-radius: 15px;
-    width: 90%;
-    max-width: 800px;
+    width: auto;
+    max-height: 300px;
 }
+
+.question_additional_html {
+    width: max-content;
+    margin: auto;
+}
+
 .timer
 {
-    /*text-align: center;*/
     font-size: x-large;
     display: flex;
     justify-content: center;
@@ -54,6 +70,10 @@ body
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+
+    flex-direction: column;
+    align-content: center;
+    align-items: center;
 
     width: 90%;
     margin: auto;
@@ -68,6 +88,11 @@ body
     border-radius: 20px;
     margin-inline: 25px;
     margin-block: 10px;
+}
+
+.question:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    background-color: #466194;
 }
 
 .questions-container {
@@ -87,6 +112,26 @@ body
     width: 200px;
 }
 
+.submit-button:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.submit-button:disabled {
+    background-color: #d3d3d3;
+    color: #a9a9a9;
+    cursor: not-allowed;
+}
+
+#kysymysnum {
+    position: relative;
+    z-index: 1;
+    font-size: x-large;
+    padding-top: 17px;
+    margin-top: 0;
+    text-align: center;
+    color: white;
+}
+
 @media (max-width: 700px)
 {
     .questions-container {
@@ -99,6 +144,12 @@ body
 
     .questions-container {
         max-width: 500px;
+    }
+
+    .header {
+        margin-bottom: 10%;
+        margin-top: 10%;
+        text-align: left;
     }
 }
 

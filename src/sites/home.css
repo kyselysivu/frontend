@@ -84,12 +84,22 @@ button {
 .play-button {
     height: 48px;
     width: 145px;
+    transition: all 0.1s ease-out;
+}
+
+.play-button:hover {
+    background: #1e5bbe;
 }
 
 .kunnia {
     margin-top: 25px;
     height: 48px;
     width: 395px;
+    transition: all 0.1s ease-out;
+}
+
+.kunnia:hover {
+    background: #1e5bbe;
 }
 
 .kunnialinkki {
