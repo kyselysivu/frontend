@@ -128,7 +128,7 @@ export default function Kysely() {
             .then((response) => response.json())
             .then((data) => {
                 console.log("Received score:", data);
-                setScore(data.score);
+                setScore(Math.round(data.score));
             })
             .catch((error) => console.error("Error fetching score:", error));
     };

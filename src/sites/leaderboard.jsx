@@ -48,7 +48,7 @@ function Leaderboard() {
                     points={item.score}
                     team={item.group_name}
                     position={index + 1}
-                    time={msToTime(item.time)}
+                    time={Math.round(msToTime(item.time))}
                 />
             ))}
         </div>
