@@ -106,7 +106,7 @@ export default function Kysely() {
     useEffect(() => {
         const parsedCookie = document.cookie.split(";")[0].split("=")[1]; // ottaa nimen cookiesta
         if (timeLeft <= 0) {
-            setGameOverTitle("ryhmän: " + parsedCookie + " Aika loppui!");
+            setGameOverTitle("Ryhmän " + decodeURI(parsedCookie) + " Aika loppui!");
             setIsGameOver(true);
             fetchScore();
             return;
@@ -135,7 +135,7 @@ export default function Kysely() {
 
     const handleFinishQuiz = () => {
         const parsedCookie = document.cookie.split(";")[0].split("=")[1];
-        setGameOverTitle("Onneksi olkoon " + parsedCookie + "!");
+        setGameOverTitle("Onneksi olkoon " + decodeURI(parsedCookie) + "!");
         setTimeElapsed(initialTime - timeLeft);
         setIsGameOver(true);
         clearInterval(timerId);
