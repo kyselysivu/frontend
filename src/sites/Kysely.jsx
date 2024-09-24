@@ -35,7 +35,7 @@ export default function Kysely() {
     const [isAnswerSelected, setIsAnswerSelected] = useState(false);
 
     const initialTime = 60 * 12;
-    let startTime = Date.now(); // Initialize startTime
+    let startTime = Date.now() / 1000; // Initialize startTime in seconds
 
     const formatTime = (seconds) => {
         const minutes = Math.floor(seconds / 60);
@@ -72,6 +72,7 @@ export default function Kysely() {
                 setQuestionIds(data.questions);
                 setCurrentQuestion(data.questions[0]);
                 setTimeLeft(data.time_limit);
+                startTime = Math.floor(Date.now() / 1000);  // Fix startTime by flooring the value to seconds
             })
             .catch((error) => console.error("Error fetching questions:", error));
     }, []);
@@ -86,7 +87,10 @@ export default function Kysely() {
                 setCurrentQuestionLoaded(true);
                 setCurrentQuestionOptions(data.answers);
                 setCurrentQuestionOptionsLoaded(true);
-                startTime = Date.now(); // Set startTime when question data is loaded
+                
+                // Reset startTime when new question is loaded
+                startTime = Date.now() / 1000;
+
                 if (data.image_src) {
                     const img = new Image();
                     img.src = data.image_src;
@@ -210,7 +214,7 @@ export default function Kysely() {
                     id="quiz-submit-button"
                     className={`submit-button ${!isAnswerSelected ? 'disabled' : ''}`}
                     onClick={() => {
-                        const endTime = Date.now(); // Add Endtime when button is pressed
+                        const endTime = Math.floor(Date.now() / 1000); // Fix endTime by flooring the value to seconds
                         if (buttonShouldGoToNextQuestion) {
                             if (currentQuestionIndex >= questionIds.length - 1) {
                                 handleFinishQuiz();
@@ -226,10 +230,9 @@ export default function Kysely() {
                             }
                         } else {
                             setSubmitButtonVisible(false);
-                    
                             setCorrectOptions([]);
                             setIncorrectOptions([]);
-                    
+
                             console.log("Submitting solutions to question", currentQuestion, ":", selectedAnswers);
                             fetch("http://localhost:3000/api/answer", {
                                 method: 'POST',
@@ -237,8 +240,8 @@ export default function Kysely() {
                                     'Content-Type': 'application/json'
                                 },
                                 body: JSON.stringify({
-                                    start_time: startTime,
-                                    end_time: endTime,
+                                    start_time: startTime,  // Send the corrected startTime
+                                    end_time: endTime,      // Send the corrected endTime
                                     question_id: currentQuestion,
                                     answers: selectedAnswers
                                 }),
@@ -249,33 +252,22 @@ export default function Kysely() {
                                     console.log("Received answer data for question", currentQuestion, ":", data);
                                     setCorrectOptions(data.correct);
                                     setIncorrectOptions(data.incorrect);
-                                    setTotalPoints(Math.round(data.total_points)); // Update total points and round to nearest integer
-                    
-                                    console.log("Selected answers:", selectedAnswers);
-                                    const getAmountOfIncorrectlyPlacedAnswers = () => {
-                                        return data.incorrect.filter((incorrectOption) => selectedAnswers.includes(incorrectOption)).length;
-                                    };
-                    
-                                    const getAmountOfCorrectlyPlacedAnswers = () => {
-                                        return data.correct.filter((correctOption) => selectedAnswers.includes(correctOption)).length;
-                                    }
-                    
+                                    setTotalPoints(Math.round(data.total_points));
+
                                     setTimeout(() => {
                                         setShouldShowCorrectAnswer(true);
-                    
                                         let subtext = "Vastasit oikein " +
                                             getAmountOfCorrectlyPlacedAnswers() +
                                             "/" +
                                             data.correct.length +
                                             " vaihtoehtoon! ";
                                         if (getAmountOfIncorrectlyPlacedAnswers() > 0) {
-                                            subtext += (getAmountOfIncorrectlyPlacedAnswers()) + " valintaasi oli väärin :(";
+                                            subtext += getAmountOfIncorrectlyPlacedAnswers() + " valintaasi oli väärin :(";
                                         }
-                    
                                         setSubtextContents(subtext);
                                         setShouldShowSubtext(true);
                                     }, 1000);
-                    
+
                                     setTimeout(() => {
                                         setButtonContents("Seuraava");
                                         setButtonShouldGoToNextQuestion(true);
@@ -285,25 +277,15 @@ export default function Kysely() {
                                 .catch((error) => console.error("Error submitting answers:", error));
                         }
                     }}
-                    disabled={!isAnswerSelected}
-                    >
-                        {buttonContents}
-                </button>
 
+                >
+                    {buttonContents}
+                </button>
+                <div className='question_subtext'>
+                    {shouldShowSubtext ? subtextContents : ""}
+                </div>
             </div>
-            <p style={{
-                display: shouldShowSubtext ? 'flex' : 'none',
-                justifyContent: 'center',
-                marginTop: '20px',
-                marginBottom: '100px',
-            }}>{subtextContents}</p>
-            <GameOverPopup
-                isVisible={isGameOver}
-                onClose={() => setIsGameOver(false)}
-                title={gameOverTitle}
-                score={score}
-                timeElapsed={gameOverTitle !== "Aika loppui!" ? formatTime(timeElapsed) : null}
-            />
+            <GameOverPopup isOpen={isGameOver} title={gameOverTitle} timeElapsed={timeElapsed} points={score} />
         </div>
     );
 }
