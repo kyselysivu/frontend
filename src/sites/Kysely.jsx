@@ -4,8 +4,10 @@ import timer from "../components/timer.svg";
 import diamond from "../components/diamond.svg";
 import { Question } from '../components/Question';
 import GameOverPopup from '../components/GameOverPopup.jsx';
+import { useNavigate } from 'react-router-dom';
 
 export default function Kysely() {
+    const navigate = useNavigate();
     const [questionCount, setQuestionCount] = useState(null);
     const [questionIds, setQuestionIds] = useState([]);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -34,6 +36,10 @@ export default function Kysely() {
     const [totalPoints, setTotalPoints] = useState(0);
     const [isAnswerSelected, setIsAnswerSelected] = useState(false);
 
+    // juhanias 25.09: fix team identifiers by moving away from cookies Lol
+    const [teamIdentifier, setTeamIdentifier] = useState("");
+    const [teamName, setTeamName] = useState("");
+
     const initialTime = 60 * 12;
 
     const formatTime = (seconds) => {
@@ -55,13 +61,22 @@ export default function Kysely() {
         return correctOptions.includes(answerId);
     }
 
+    // Check if there's a specific element with a specific id on the page 
+    if (!document.getElementById('username')) {
+        navigate('/');
+    }
+
     useEffect(() => {
+        if (!document.getElementById('username')) {
+            return;
+        }
+
         fetch("http://localhost:3000/api/start", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ team_name: document.cookie.split(";")[0].split("=")[1]}),
+            body: JSON.stringify({ team_name: document.getElementById('username').innerHTML }),
             credentials: 'include'
         })
             .then((response) => response.json())
@@ -71,6 +86,9 @@ export default function Kysely() {
                 setQuestionIds(data.questions);
                 setCurrentQuestion(data.questions[0]);
                 setTimeLeft(data.time_limit);
+
+                setTeamIdentifier(data.team_id);
+                setTeamName(data.team_name);
             })
             .catch((error) => console.error("Error fetching questions:", error));
     }, []);
@@ -104,9 +122,8 @@ export default function Kysely() {
     }, [currentQuestion]);
 
     useEffect(() => {
-        const parsedCookie = document.cookie.split(";")[0].split("=")[1]; // ottaa nimen cookiesta
         if (timeLeft <= 0) {
-            setGameOverTitle("Ryhmän " + decodeURI(parsedCookie) + " Aika loppui!");
+            setGameOverTitle("Ryhmän " + teamName + " aika loppui!");
             setIsGameOver(true);
             fetchScore();
             return;
@@ -123,6 +140,10 @@ export default function Kysely() {
     const fetchScore = () => {
         fetch("http://localhost:3000/api/end", {
             method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ user: teamIdentifier }),
             credentials: 'include'
         })
             .then((response) => response.json())
@@ -134,8 +155,7 @@ export default function Kysely() {
     };
 
     const handleFinishQuiz = () => {
-        const parsedCookie = document.cookie.split(";")[0].split("=")[1];
-        setGameOverTitle("Onneksi olkoon " + decodeURI(parsedCookie) + "!");
+        setGameOverTitle("Onneksi olkoon " + teamName + "!");
         setTimeElapsed(initialTime - timeLeft);
         setIsGameOver(true);
         clearInterval(timerId);
@@ -236,6 +256,7 @@ export default function Kysely() {
                                     'Content-Type': 'application/json'
                                 },
                                 body: JSON.stringify({
+                                    user: teamIdentifier,
                                     question_id: currentQuestion,
                                     answers: selectedAnswers
                                 }),

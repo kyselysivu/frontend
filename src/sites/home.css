@@ -144,3 +144,7 @@ button {
         display: block;
     }
 }
+
+#username {
+    display: none;
+}

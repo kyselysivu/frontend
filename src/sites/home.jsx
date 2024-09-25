@@ -2,7 +2,6 @@ import React from 'react';
 import "./home.css";
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useCookies } from 'react-cookie';
 
 function Home() {
     const navigate = useNavigate();
@@ -11,14 +10,16 @@ function Home() {
     };
 
     const [inputValue, setInputValue] = useState('');
-    const [cookies, setCookie] = useCookies(['user']);
 
     const handleButtonClick = () => {
         console.log(inputValue);
-        setCookie('user', inputValue, { sameSite: 'none', secure: false });
-        setCookie('team', '', { expires: new Date(0) });
-        console.log("cookie:", cookies.user);
         navigate('/questions');
+
+        // Create a new element in the body using JavaScript
+        const usernameElement = document.createElement('div');
+        usernameElement.innerHTML = inputValue;
+        usernameElement.id = 'username';
+        document.body.appendChild(usernameElement);
     };
 
     return (
